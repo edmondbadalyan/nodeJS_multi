@@ -23,6 +23,12 @@ export class Player extends Schema {
 
     @type("number")
     vZ = 0;
+
+    @type("number")
+    rX = 0;
+
+    @type("number")
+    rY = 0;
 }
 
 export class State extends Schema {
@@ -42,12 +48,15 @@ export class State extends Schema {
     }
 
     movePlayer (sessionId: string, data: any) {
-            this.players.get(sessionId).pX = data.pX;
-            this.players.get(sessionId).pY = data.pY;
-            this.players.get(sessionId).pZ = data.pZ;
-            this.players.get(sessionId).vX = data.vX;
-            this.players.get(sessionId).vY = data.vY;
-            this.players.get(sessionId).vZ = data.vZ;
+        const player = this.players.get(sessionId);
+            player.pX = data.pX;
+            player.pY = data.pY;
+            player.pZ = data.pZ;
+            player.vX = data.vX;
+            player.vY = data.vY;
+            player.vZ = data.vZ;
+            player.rX = data.rX;
+            player.rY = data.rY;
     }
 }
 
@@ -60,9 +69,10 @@ export class StateHandlerRoom extends Room<State> {
         this.setState(new State());
 
         this.onMessage("move", (client, data) => {
-            console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
+            //console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
             this.state.movePlayer(client.sessionId, data);
         });
+        this.onMessage("shoot", (client,data) => {this.broadcast("Shoot",data,{except: client})});
     }
 
     onAuth(client, options, req) {
