@@ -3,6 +3,13 @@ import { Schema, type, MapSchema } from "@colyseus/schema";
 
 export class Player extends Schema {
 
+
+    @type("int8")
+    maxHP = 0;
+
+    @type("int8")
+    currentHP = 0;
+
     @type("number")
     speed = 0;
 
@@ -40,6 +47,8 @@ export class State extends Schema {
     createPlayer(sessionId: string, data: any) {
         const player = new Player()
         player.speed = data.speed;
+        player.maxHP = data.hp;
+        player.currentHP = data.hp;
         this.players.set(sessionId, player);
     }
 
@@ -67,6 +76,7 @@ export class StateHandlerRoom extends Room<State> {
         console.log("StateHandlerRoom created!", options);
 
         this.setState(new State());
+        this.setPatchRate(20);
 
         this.onMessage("move", (client, data) => {
             //console.log("StateHandlerRoom received message from", client.sessionId, ":", data);
