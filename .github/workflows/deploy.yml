@@ -20,4 +20,27 @@ jobs:
 
       - name: Deploy files to server
         run: |
-          rsync -avz --delete ./ root@89.44.86.169:/root/Shooter/src
+          name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master  # или main, если у тебя основная ветка называется так
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.RSA_KEY }}
+
+      - name: Deploy files to server
+        run: |
+          rsync -avz --delete ./ root@89.44.86.169:/root/Shooter/src \
+            -e "ssh -o StrictHostKeyChecking=no"
