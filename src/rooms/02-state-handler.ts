@@ -2,6 +2,11 @@ import { Room, Client } from "colyseus";
 import { Schema, type, MapSchema } from "@colyseus/schema";
 
 export class Player extends Schema {
+
+
+    @type("uint8")
+    privaet_akak_dela = 0;
+
     @type("uint8")
     skin = 0;
 
