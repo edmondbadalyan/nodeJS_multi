@@ -68,6 +68,7 @@ export class State extends Schema {
 
     movePlayer (sessionId: string, data: any) {
         const player = this.players.get(sessionId);
+            if (!player) return;
             player.pX = data.pX;
             player.pY = data.pY;
             player.pZ = data.pZ;
@@ -119,7 +120,12 @@ export class StateHandlerRoom extends Room<State> {
         this.onMessage("damage",(client,data) => {
                const clientID = data.id;
                const player = this.state.players.get(clientID);
+                 
 
+               if (!player) {
+                    console.error(`Player not found: ${client.sessionId}`);
+                    return;
+                }
                let hp = player.currentHP -= data.value;
 
                if(hp > 0){
